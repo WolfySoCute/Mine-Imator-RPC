@@ -1,12 +1,14 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from PyInstaller.utils.hooks import collect_submodules
+hiddenimports_comtypes = collect_submodules('comtypes')
 
 a = Analysis(
     ['main.py'],
     pathex=[],
     binaries=[],
     datas=[('icon.ico', '.')],
-    hiddenimports=[],
+    hiddenimports=hiddenimports_comtypes,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
