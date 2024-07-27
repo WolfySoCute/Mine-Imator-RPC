@@ -13,4 +13,4 @@ There is a choice of portable and installer versions. The installer version incl
 [To download, go to the latest release page](https://github.com/WolfySoCute/Mine-Imator-RPC/releases/latest/)
 
 ## Build
-To bind the script into a single executable file, a `build.bat` script has already been prepared. After all changes just run it. The `Mine-Imator RPC.exe` file will appear in the `dist` folder.
+To bind the script into a single executable file, a `build_onefile.bat` script has already been prepared. After all changes just run it. The `Mine-Imator RPC.exe` file will appear in the `dist` folder.
