@@ -3,16 +3,12 @@ import signal
 import sys
 from pypresence import Presence
 from PIL import Image
-import time
 from threading import Thread, Event
 from typing import TypedDict
 import psutil
 from pywinauto import application, WindowSpecification
 from pystray import Icon, MenuItem
 from pystray._base import Icon as IconType
-from pystray._base import MenuItem as MenuItemType
-import win32con
-import win32gui
 
 
 def resource_path(relative_path):
@@ -38,12 +34,10 @@ CLIENT_ID = "1266358210822934559"
 # Флаги для управления запуском/остановкой
 stop_event = Event()
 running = False
-console_opened = True
 process_name = "Mine-imator.exe"
 
 # Создаем объект Presence один раз
 rpc = Presence(CLIENT_ID)
-# rpc.connect()  # Подключаемся сразу при создании
 
 
 def check_discord_status():
@@ -83,7 +77,7 @@ def get_app_info(name):
             info["window"] = find_window(proc.pid)
             print(f"Процесс {name} найден.")
     if not info:
-        # print(f"Процесс {name} не найден.")
+        print(f"Процесс {name} не найден.")
         return None
     else:
         return info
@@ -144,33 +138,10 @@ def update_status():
         print(f"Ошибка сброса статуса: {e}")
 
 
-hwnd = win32gui.GetForegroundWindow()
-
-
-def hide_console():
-    """Скрыть консоль."""
-    global console_opened
-    console_opened = False
-    win32gui.ShowWindow(hwnd, win32con.SW_HIDE)
-
-
-def show_console():
-    """Показать консоль."""
-    global console_opened
-    console_opened = True
-    win32gui.ShowWindow(hwnd, win32con.SW_SHOW)
-
-
 def on_clicked(icon: IconType, item: MenuItem):
     global running
 
-    if item.text == "Показать консоль":
-        show_console()
-
-    elif item.text == "Скрыть консоль":
-        hide_console()
-
-    elif item.text == "Запустить":
+    if item.text == "Запустить":
         on_start()
         print("RPC включен")
 
@@ -186,7 +157,6 @@ def on_quit(icon: IconType, item: MenuItem):
     global running
     running = False
     stop_event.set()
-    show_console()
     icon.stop()
     print("Приложение остановлено")
 
@@ -214,11 +184,6 @@ def generate_menu():
         menu.append(MenuItem("Приостановлено", None, enabled=False))
         menu.append(MenuItem("Запустить", on_clicked))
 
-    if console_opened:
-        menu.append(MenuItem("Скрыть консоль", on_clicked))
-    else:
-        menu.append(MenuItem("Показать консоль", on_clicked))
-
     menu.append(MenuItem("Выход", on_quit))
 
     return menu
@@ -232,7 +197,6 @@ signal.signal(signal.SIGINT, ctrl_c_handler)
 
 if __name__ == "__main__":
     on_start()
-    hide_console()
 
     image = Image.open(resource_path("icon.ico"))
 
